@@ -132,7 +132,9 @@ meld_iFit_S22i_CSV_TCX_to_better_TCX <- function(chr.path = '~/Downloads/', chr.
   # separate lines for readability
   dt[, fullTime := paste0(gsub(" ", "T", as.character(lubridate::ymd_hms(start_time) - ms(ride_duration) + ms(i.Time))), ".000Z") ]
   dt[, trackpoint := paste0("<Trackpoint>\n  <Time>", fullTime, "</Time>\n")]
-  dt[!is.na(AltitudeMeters), trackpoint := paste0(trackpoint, "  <AltitudeMeters>", AltitudeMeters, "</AltitudeMeters>\n")]
+  if("AltitudeMeters" %in% colnames(dt)) {
+    dt[!is.na(AltitudeMeters), trackpoint := paste0(trackpoint, "  <AltitudeMeters>", AltitudeMeters, "</AltitudeMeters>\n")]
+  }
   dt[, trackpoint := paste0(trackpoint, "  <DistanceMeters>", Miles * 1609.34, "</DistanceMeters>\n")]
   dt[i.HR != 0, trackpoint := paste0(trackpoint, "  <HeartRateBpm><Value>",round(i.HR, 0), "</Value></HeartRateBpm>\n")]
   dt[, trackpoint := paste0(trackpoint, "  <Cadence>",i.RPM, "</Cadence>\n")]
